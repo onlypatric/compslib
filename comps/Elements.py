@@ -1337,6 +1337,7 @@ class MultilineAssistedField(Vertical):
             with open(path, "w") as f:
                 f.write(self.textField.toPlainText())
 
+
 class ListWidget(QListWidget,BasicElement,Linked,Padded):
     def __init__(self, *items:str, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -1362,30 +1363,6 @@ class ListWidget(QListWidget,BasicElement,Linked,Padded):
         self.takeItem(index)
         return self
 
-
-class ToolButton(QToolButton, BasicElement, Linked, Padded):
-    def __init__(self, text:str|None=None, parent:QWidget|None=None,style:Style|QSS|None=None) -> None:
-        super().__init__(parent=parent)
-        self.set_text(text)
-        self.set_style(style)
-    def set_checkable(self, value:bool) -> Self:
-        self.setCheckable(value)
-        return self
-    def set_checked(self, value:bool) -> Self:
-        self.setChecked(value)
-        return self
-    def set_tool_button_style(self, value:Qt.ToolButtonStyle) -> Self:
-        self.setToolButtonStyle(value)
-        return self
-    def set_menu(self, menu:QMenu) -> Self:
-        self.setMenu(menu)
-        return self
-    def set_auto_raise(self, value:bool) -> Self:
-        self.setAutoRaise(value)
-        return self
-    def set_text(self,text:str) -> Self:
-        self.setText(text)
-        return self
 
 class ProxyMultiLineInput(Vertical):
     def __init__(self, parent=None, style: Style = None):
