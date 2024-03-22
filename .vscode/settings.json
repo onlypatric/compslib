@@ -1,0 +1,8 @@
+{
+    "python.analysis.typeCheckingMode": "basic",
+    "files.associations": {
+        "*.s": "arm",
+        "socket.h": "c",
+        "ctime": "cpp"
+    }
+}
