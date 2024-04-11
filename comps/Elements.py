@@ -45,7 +45,7 @@ class Finder:
             Finder.elements.pop(element, None)
 
     @staticmethod
-    def get(id_: str) -> QWidget:
+    def get(id_: str) -> QWidget|Any:
         """Gets an element from the map
 
         Args:
@@ -326,7 +326,7 @@ class Linked:
     setEnabled: Callable
     setVisible: Callable
 
-    def link(self, chbox: "CheckBox") -> Self:
+    def link(self, chbox: Union["CheckBox", str]) -> Self:
         """Links the enable state of the object to a CheckBox.
 
         Args:
@@ -335,17 +335,24 @@ class Linked:
         Returns:
             itself: Returns itself after setting up the linkage.
         """
+        if isinstance(chbox, str):
+            chbox = Finder.get(chbox)
         self.setEnabled(chbox.isChecked())
         chbox.stateChanged.connect(lambda x: self.setEnabled(x))
         return self
 
-    def visible(self, chbox: "CheckBox"):
+    def visible(self, chbox: Union["CheckBox",str]):
         """Sets the visibility of the widget to the state of the checkbox"""
+        if isinstance(chbox, str):
+            chbox = Finder.get(chbox)
         self.setVisible(chbox.isChecked())
         chbox.stateChanged.connect(lambda x: self.setVisible(x))
         return self
-    def notVisible(self, chbox: "CheckBox"):
+
+    def notVisible(self, chbox: Union["CheckBox", str]):
         """Sets the visibility of the widget to the state of the checkbox"""
+        if isinstance(chbox, str):
+            chbox = Finder.get(chbox)
         self.setVisible(not chbox.isChecked())
         chbox.stateChanged.connect(lambda x: self.setVisible(not x))
         return self
@@ -386,7 +393,7 @@ class Clickable:
 class Iconizable:
     setIcon: Callable
 
-    def icon(self, icon: QIcon) -> Self:
+    def set_icon(self, icon: QIcon) -> Self:
         """Sets the icon for the object.
 
         Args:
@@ -457,6 +464,7 @@ class BasicElement(Padded, Stylable, Attributable, Identifiable, Alignable, Siza
     setMaximumSize: Callable
     setFixedWidth: Callable
     setFixedHeight: Callable
+    Size = QSizePolicy.Policy
     """
     A basic element that combines functionality from multiple classes.
 
@@ -974,7 +982,9 @@ class CheckBox(QCheckBox, BasicElement, Checkable, Linked, Iconizable):
         super().__init__(text=text, parent=parent)
         self.setStyleSheet(style.to_str() if style else "")
         self.setAccessibleName(self.__class__.__name__)
-    def enableCondition(self, other:"CheckBox"):
+    def enableCondition(self, other:Union["CheckBox",str]):
+        if isinstance(other, str):
+            other = Finder.get(other)
         self.setEnabled(other.isChecked())
         # add listener for then other value changes and set the same
         other.stateChanged.connect(lambda x: (self.setChecked(other.isChecked()),self.setCheckable(other.isChecked())))
@@ -1388,11 +1398,11 @@ class ScrollableContainer(Vertical, BasicElement):
     def horizontal(self, horizontalBehavior: Qt.ScrollBarPolicy = Qt.ScrollBarPolicy.ScrollBarAlwaysOn) -> Self:
         self.scroll_area.setHorizontalScrollBarPolicy(horizontalBehavior)
         return self
-
+    h=horizontal
     def vertical(self, verticalBehavior: Qt.ScrollBarPolicy = Qt.ScrollBarPolicy.ScrollBarAlwaysOn) -> Self:
         self.scroll_area.setVerticalScrollBarPolicy(verticalBehavior)
         return self
-
+    v=vertical
 
 class GroupBox(QGroupBox, BasicElement, Padded, Linked):
     layout: Callable[..., QLayout]
